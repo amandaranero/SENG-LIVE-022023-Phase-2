@@ -5,7 +5,18 @@ import ProjectForm from "./components/ProjectForm";
 import ProjectList from "./components/ProjectList";
 
 const App = () => {
+
   const [projects, setProjects] = useState([]);
+  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const searchResults = projects.filter((project) => {
+    return project.name.toLowerCase().includes(searchQuery.toLowerCase());
+  });
+  const handleOnChange = (e) => setSearchQuery(e.target.value);
+
+
+  const onToggleDarkMode = ()=> setIsDarkMode(!isDarkMode)
 
   const handleClick = () => {
     fetch("http://localhost:4000/projects")
@@ -15,10 +26,13 @@ const App = () => {
 
   return (
     <div className="App">
-      <Header />
+      <Header isDarkMode={isDarkMode} onToggleDarkMode={onToggleDarkMode}/>
       <ProjectForm />
       <button onClick={handleClick}>Load Projects</button>
-      <ProjectList projects={projects} />
+      <ProjectList 
+        projects={projects} 
+        searchResults={searchResults} 
+        handleOnChange={handleOnChange}/>
     </div>
   );
 };
